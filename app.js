@@ -2,10 +2,14 @@ const express = require('express');
 const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
 // Routes Files
 const productsRoutes = require('./api/routes/products');
 const ordersRoutes = require('./api/routes/orders');
+
+// Mongo Connect With Mongoose
+mongoose.connect('mongodb://localhost/ShopRestApiExample', { useNewUrlParser: true });
 
 // Middlewares
 app.use(morgan('dev'));
