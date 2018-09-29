@@ -7,10 +7,13 @@ const Product = require('../models/product')
 
 
 router.get('/', (req, res, next) => {
-    Order.find()
-        // .select('_id product quantity')
+    Order
+        .find()
+        // .select('product quantity _id')
+        .populate({ path: 'product', select: 'name price' })
         .exec()
         .then(docs => {
+
             res.status(200).json({
                 count: docs.length,
                 orders: docs.map(doc => {
@@ -23,8 +26,7 @@ router.get('/', (req, res, next) => {
                             url: '{{URL}}/orders/' + doc._id
                         }
                     }
-                }),
-
+                })
             })
         })
         .catch(err => {
@@ -34,8 +36,11 @@ router.get('/', (req, res, next) => {
 
 router.post('/', (req, res, next) => {
 
-    Product.findById(req.body.productId)
+    Product
+        .findById(req.body.productId)
         .then(product => {
+
+
             if (!product) {
                 return res.status(404).json({
                     message: 'Product not found'
@@ -72,9 +77,11 @@ router.post('/', (req, res, next) => {
 
 router.get('/:orderId', (req, res, next) => {
     Order.findById(req.params.orderId)
+        .select('product quantity _id')
+        .populate({ path: 'product', select: 'name price' })
         .exec()
         .then(order => {
-            if (!order) res.status(500).json({ message: "Product Not FOund" })
+            if (!order) res.status(500).json({ message: "Order Not Found" })
             res.status(200).json({
                 order: order
             })
@@ -87,7 +94,8 @@ router.get('/:orderId', (req, res, next) => {
 });
 
 router.delete('/:orderId', (req, res, next) => {
-    Order.remove({ _id: request.params.orderId })
+    Order
+        .remove({ _id: req.params.orderId })
         .exec()
         .then(() => {
             res.status(200).json({

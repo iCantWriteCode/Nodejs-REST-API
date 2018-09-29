@@ -13,6 +13,7 @@ mongoose.connect('mongodb://localhost/ShopRestApiExample', { useNewUrlParser: tr
 
 // Middlewares
 app.use(morgan('dev'));
+app.use('/uploads', express.static('uploads'))
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
